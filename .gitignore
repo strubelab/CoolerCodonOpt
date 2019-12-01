@@ -1,0 +1,57 @@
+## custom additions
+__pycache__
+.mypy_cache
+venv
+.ipynb_checkpoints
+*.wpu
+*.wpr
+*sqlite3
+staticfiles
+.env
+dev_uploads
+*.db
+
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Emacs
+*~
+.#*
+\#*\#
+
+# Mac-OSX
+.DS_Store
+\~\$*
