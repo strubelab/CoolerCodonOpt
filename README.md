@@ -21,21 +21,21 @@ Codon optimization using the [dnachisel](https://pypi.org/project/dnachisel/) li
 
    - Go to the `CoolerCodonOpt` directory
    
-   `cd CoolerCodonOpt`
+     `cd CoolerCodonOpt`
    
    - Install `virtualenv` if not present, and create the virtual environment
    
-   `pip install virtualenv`
+     `pip install virtualenv`
    
-   `virtualenv --python=python3 venv`
+     `virtualenv --python=python3 venv`
    
    - Activate the virtual environment
    
-   `source venv/bin/activate`
+     `source venv/bin/activate`
    
    - Deactivate the virtual environment (when you finish working)
    
-   `deactivate`
+     `deactivate`
    
    
 4. Install dnachisel with the following command:
