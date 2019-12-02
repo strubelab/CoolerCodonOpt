@@ -48,9 +48,6 @@ def parsing(args=None):
         help='''Directory path for saving the resulting sequences and scores, 
         if --save or --saveall options are selected.''')
 
-    parser.add_argument("-a", "--atg", help='''Add ATG at the beginning of the
-        sequence.''', action="store_true")
-
     parser.add_argument("-q", "--seqname", default="seq", 
         help='''Name/identifier of the sequence. Only used when a single
         sequence is provided.''')
@@ -70,12 +67,11 @@ def parsing(args=None):
 if __name__ == '__main__':
 
     args = parsing()
-    sequence = 'ATG'+args.sequence if args.atg else args.sequence
 
     print('')
     print('Producing %d sequences for each input sequence...\n' % \
         (args.nback*args.number or args.number))
     
-    codonopt.optimize(sequence, args.nback, args.number, args.saveall,
+    codonopt.optimize(args.sequence, args.nback, args.number, args.saveall,
         args.destination, args.verbose, args.seqname, args.save, 
         args.modebt, args.jobname)
