@@ -2,41 +2,57 @@
 Script to perform codon optimization using the dnachisel library
 """
 
-import os, random
+import os, random, copy
 
 import dnachisel as dn
 import dnachisel.builtin_specifications as spec
 import python_codon_tables as pct
 import numpy as np
 
-import Bio.Seq as bio
-
-from operator import itemgetter
+from Bio import SeqIO
+from Bio.Alphabet import IUPAC
+from Bio.Seq import Seq, translate
+from Bio.SeqRecord import SeqRecord
 from Bio.Data import CodonTable
 
+from operator import itemgetter
 
-def get_sequences(sequence):
+
+# def get_sequences(sequence):
+#     """
+#     Extracts the sequences from a fasta or text file and saves them to a list
+
+#     Input
+#     -----
+#     sequence : str
+#         Name of fasta or text file
+
+#     Output
+#     -----
+#     sequences: list
+#         List of tuples (name, sequence)
+#     """
+
+#     with open(sequence) as f:
+#         lines = f.readlines()
+
+#     sequences = [(lines[i][1:].strip(), lines[i+1].strip()) \
+#                     for i in range(len(lines)) if lines[i].startswith('>')]
+
+#     return sequences
+
+
+def is_protein(sequence):
     """
-    Extracts the sequences from a fasta or text file and saves them to a list
-
-    Input
-    -----
-    sequence : str
-        Name of fasta or text file
-
-    Output
-    -----
-    sequences: list
-        List of tuples (name, sequence)
+    Returns True if the provided sequence is a protein
     """
+    amino_acids = list('MPWRLHIDEVNQSKFY')
 
-    with open(sequence) as f:
-        lines = f.readlines()
+    for aa in amino_acids:
+        if aa in sequence:
+            return True
 
-    sequences = [(lines[i][1:].strip(), lines[i+1].strip()) \
-                    for i in range(len(lines)) if lines[i].startswith('>')]
-
-    return sequences
+    return False
 
 
 def get_originals(sequences):
@@ -46,29 +62,43 @@ def get_originals(sequences):
     Input
     -----
     sequences : list
-        List with (name, sequence) pairs with the original sequences, can be
+        List with SeqRecord objects with the original sequences, can be
         either DNA or protein
 
     Output
     -----
     originals : list
-        List with DnaOptimizationProblems evaluations for all original sequences
-        (sequence, score, constraints_text, objectives_text) if they are DNA
-        sequences, else, None
+        List with SeqRecord objects with the DnaOptimizationProblems evaluations
+        (score, constraints_text, objectives_text) added as annotations if they
+        are DNA sequences, else, the list contains None elements
     
     """
 
     originals = []
 
-    for name, seq in sequences:
+    for sequence in sequences:
 
-        if not ('R' in seq or 'F' in seq or 'W' in seq):    # It is DNA
+        name = sequence.name
+        seq = str(sequence.seq)
+
+        if not is_protein(seq):
+            print("DNA sequence identified...\n")
+
             problem = run(seq, opt=False)
-            evaluations = problem.objectives_evaluations().evaluations
-            originals.append((problem.sequence, evaluations[0].score,\
-                problem.constraints_text_summary(),\
-                problem.objectives_text_summary()))
+
+            sequence.annotations["Objectives score"] = \
+                problem.objectives_evaluations().scores_sum()
+
+            sequence.annotations["Constraints text summary"] = \
+                problem.constraints_text_summary()
+
+            sequence.annotations["Objectives text summary"] = \
+                problem.objectives_text_summary()
+
+            originals.append(sequence)
+        
         else:
+            print("Protein sequence identified...\n")
             originals.append(None)
 
     return originals
@@ -81,7 +111,7 @@ def run(sequence, opt=True):
     Input
     -----
     sequence : str
-        dna sequence to be optimized
+        DNA sequence to be optimized
     opt : boolean
         Wether to optimize the sequence or only generate the problem. This is
         in case you only want the evaluations of the sequence
@@ -125,55 +155,55 @@ def run(sequence, opt=True):
     return problem
 
 
-def save_all(og_sequence, opt_sequences, destination, name):
-    """
-    Function to save the results for all the produced sequences for comparison
+# def save_all(og_sequence, opt_sequences, destination, name):
+#     """
+#     Function to save the results for all the produced sequences for comparison
 
-    Input
-    -----
-    og_sequence : tuple
-        Original sequence, in a tuple with
-        (sequence, score, constraints_text, objectives_text)
-    opt_sequences : list
-        List of tuples with the optimized sequences in the form
-        (sequence, score, constraints_text, objectives_text)
-    destination : str
-        Directory path for saving the results
-    name : str
-        Name of the sequence
-    """
+#     Input
+#     -----
+#     og_sequence : tuple
+#         Original sequence, in a tuple with
+#         (sequence, score, constraints_text, objectives_text)
+#     opt_sequences : list
+#         List of tuples with the optimized sequences in the form
+#         (sequence, score, constraints_text, objectives_text)
+#     destination : str
+#         Directory path for saving the results
+#     name : str
+#         Name of the sequence
+#     """
 
-    with open(os.path.join(
-            destination, name + '_summarized_optimization.txt'), 'w') as f:
+#     with open(os.path.join(
+#             destination, name + '_summarized_optimization.txt'), 'w') as f:
         
-        f.write('# Best optimized sequence for each back translation\n\n')
+#         f.write('# Best optimized sequence for each back translation\n\n')
 
-        if og_sequence:
-            f.write('> Original_sequence_score_%.4f\n' % (og_sequence[1]))
-            f.write(og_sequence[0] + '\n')
-            f.write('\n')
+#         if og_sequence:
+#             f.write('> Original_sequence_score_%.4f\n' % (og_sequence[1]))
+#             f.write(og_sequence[0] + '\n')
+#             f.write('\n')
         
-        for i in range(len(opt_sequences)):
-            f.write('> %03d_score_%.4f\n' % (i+1, opt_sequences[i][1]))
-            f.write(opt_sequences[i][0] + '\n')
-            f.write('\n')
+#         for i in range(len(opt_sequences)):
+#             f.write('> %03d_score_%.4f\n' % (i+1, opt_sequences[i][1]))
+#             f.write(opt_sequences[i][0] + '\n')
+#             f.write('\n')
 
-    with open(os.path.join(
-            destination, name + '_full_optimization.txt'), 'w') as f:
+#     with open(os.path.join(
+#             destination, name + '_full_optimization.txt'), 'w') as f:
         
-        f.write('# Best optimized sequence for each back translation\n\n')
+#         f.write('# Best optimized sequence for each back translation\n\n')
 
-        if og_sequence:
-            f.write('> Original_sequence\n')
-            f.write(og_sequence[0] + '\n')
-            f.write(og_sequence[2] + '\n')
-            f.write(og_sequence[3] + '\n')
+#         if og_sequence:
+#             f.write('> Original_sequence\n')
+#             f.write(og_sequence[0] + '\n')
+#             f.write(og_sequence[2] + '\n')
+#             f.write(og_sequence[3] + '\n')
 
-        for i in range(len(opt_sequences)):
-            f.write('> %03d\n' % (i+1))
-            f.write(opt_sequences[i][0] + '\n')
-            f.write(opt_sequences[i][2] + '\n')
-            f.write(opt_sequences[i][3] + '\n')
+#         for i in range(len(opt_sequences)):
+#             f.write('> %03d\n' % (i+1))
+#             f.write(opt_sequences[i][0] + '\n')
+#             f.write(opt_sequences[i][2] + '\n')
+#             f.write(opt_sequences[i][3] + '\n')
 
 
 def save_fasta(optimized, destination, jobname):
@@ -196,31 +226,6 @@ def save_fasta(optimized, destination, jobname):
             f.write('>%s_score_%.4f\n' % (name, data[1]))
             f.write(data[0]+'\n')
             f.write('\n')
-
-
-def print_verbose(og_sequence, opt_sequence):
-    """
-    Print the constraints evaluations and objectives score for the best sequence
-    
-    Input
-    -----
-    name : str
-        Name or identifier for the sequence
-    og_sequence : str
-        Original sequence
-    opt_sequence : tuple
-        Tuple with (sequence, score, constraints_text, objectives_text)
-    """
-    if og_sequence:
-        print('> Original sequence')
-        print(og_sequence[0] + '\n')
-        print(og_sequence[2])
-        print(og_sequence[3])
-
-    print('> Optimized sequence')
-    print(opt_sequence[0] + '\n')
-    print(opt_sequence[2])
-    print(opt_sequence[3])
 
 
 def detect_ATA_ATA(sequence):
@@ -271,9 +276,9 @@ def call_dnachisel(seq, n):
     for j in range(n):
         problem = run(seq)
         
-        evaluations = problem.objectives_evaluations().evaluations
+        score = problem.objectives_evaluations().scores_sum()
 
-        opt_sequences.append((problem.sequence, evaluations[0].score,\
+        opt_sequences.append((problem.sequence, score,\
             problem.constraints_text_summary(),\
             problem.objectives_text_summary()))
 
@@ -287,132 +292,166 @@ def call_dnachisel(seq, n):
     return call_dnachisel(seq, n)
 
 
-def optimize(sequence, nback, n, saveall, destination, verbose, seqname, save, 
-    mode, jobname):
+def optimize(in_sequence, intype, nback, n, seqid):
     """
     Executes the optimization problem n number of times, and saves the results
     
     Input
     -----
-    sequence : str
+    in_sequence : str
         dna sequence to be optimized, or name of text or fasta file with
         fasta sequences
+    intype : str
+        If `sequence` is a file, indicate the file format as 'fasta' or 
+        'genbank'
     nback : int
         number of random back-translated sequences to produce from the original
     n : int
         number of optimized sequences to produce
-    saveall : boolean
-        Save the results of all the produced sequences (sequence, score, 
-        constraints, optimization score)
-    destination : str
-        Directory path for saving the results
-    verbose : boolean
-        Print progress, evaluation results and optimized sequence to terminal
-    seqname : str
-        Name of the sequence
-    save : boolean
-        Save only the best sequences to a file
-    mode : str
-        Mode for back translation, can be random or optimized
-    jobname : str
-        Name for the current job, to be used in the results file made by
-        save_fasta()
+    seqid : str
+        ID for the sequence, if it is a sequence provided as a string argument
+        when calling the script, i.e. not from a file.
+
+    Output
+    -----
+    originals : list
+        List with SeqRecord objects with the original sequences, plus
+        annotations for the dnachisel score and summaries if they are DNA
+        sequences. If the original sequences are proteins, this list contains
+        None objects
+    optimized : list
+        List with deep copies of the SeqRecord objects from the original
+        sequences. The .seq attribute is changed to the optimized sequence, and
+        annotations for the dnachisel score and summaries are added
     """
     
-    if sequence[-5:] == 'fasta' or sequence[-3:] == 'txt':
-        sequences = get_sequences(sequence)
+    if intype:
+        sequences = list(SeqIO.parse(in_sequence, intype))
+    elif os.path.isfile(in_sequence):
+        raise TypeError('''Please indicate the file type with the --intype 
+            argument''')
     else:
-        sequences = [(seqname,sequence)]
+        sequences = [SeqRecord(Seq(in_sequence), id=seqid, description='')]
 
-    # List with problem evaluations for all original input sequences in the form
-    # (sequence, score, constraints_text, objectives_text)
+    # List with SeqRecords for the original sequences and their evaluations in
+    # the 'annotations' dictionary
     # if they are DNA sequences, else, None
     originals = get_originals(sequences)
 
-    # List with (name, [backtranslated1, backtranslated2, backtranslated3, ...])
+    # List with (SeqRecord, [backtranslated1, backtranslated2, ...])
     # for each input sequence
-    backtranslated = back_translate(sequences, nback, mode)
+    backtranslated = back_translate(sequences, nback)
 
-    # List with a (name, best_sequence) tuple for each input sequence, 
-    # where best_sequence is a tuple with the form 
-    # (sequence, score, constraints_text, objectives_text)
+    # List with SeqRecords for each input sequence
     optimized = []
 
     for i in range(len(backtranslated)):
 
-        name = backtranslated[i][0]
-        seqs = backtranslated[i][1]
+        sequence = backtranslated[i][0]
+        btr_seqs = backtranslated[i][1]
 
         # List with tuples 
         # (optimized_sequence, score, constraints_text, objectives_text)
-        optimized_backtranslated = [call_dnachisel(seq, n) for seq in seqs]
+        optimized_backtranslated = [call_dnachisel(seq, n) for seq in btr_seqs]
 
         optimized_backtranslated = sorted(optimized_backtranslated,
             key=itemgetter(1), reverse=True)
 
-        if saveall:
-            save_all(originals[i], optimized_backtranslated, destination, name)
+        # Deprecated
+        # if saveall:
+        #     save_all(originals[i], optimized_backtranslated, destination, 
+        #         sequence.name)
 
-        optimized.append((name, optimized_backtranslated[0]))
+        best_optimized = optimized_backtranslated[0]
 
-    if verbose==1:
-        for i in range(len(optimized)):
-            print_verbose(originals[i], optimized[i][1])
-    elif verbose > 1:
-        for i in range(len(optimized)):
-            print('Optimized score: %.4f' % optimized[i][1][1])
+        sequence.seq = Seq(best_optimized[0], 
+            IUPAC.unambiguous_dna)
 
-    if save:
-        save_fasta(optimized, destination, jobname)
+        sequence.annotations["Objectives score"] = best_optimized[1]
+        sequence.annotations["Constraints text summary"] = best_optimized[2]
+        sequence.annotations["Objectives text summary"] = best_optimized[3]
+        
+        optimized.append(sequence)
+
+    # Turn these methods into tests later
+    assert verify_translation(originals, optimized)
+    assert verify_notequal(originals, optimized)
+
+    return originals, optimized
 
 
-def get_standard_table():
+# def get_standard_table():
+#     """
+#     Gets the standard codon table from Bio.Data.CodonTable
+
+#     Output
+#     -----
+#     standard_codons : dict
+#         Dictionary of the form {'F':['TTT', 'TTC', ...], ...}
+#     """
+
+#     # Dictionary of the form {'TTT': 'F', 'TTC': 'F', 'TTA': 'L', ...}
+#     standard_table=CodonTable.unambiguous_dna_by_name["Standard"].forward_table
+
+#     # Invert the standard table dictionary to make the keys the amino acids, and
+#     # the values lists of possible codons
+#     standard_codons = {}
+#     for key, value in standard_table.items():
+#         if value not in standard_codons:
+#             standard_codons[value] = [key]
+#         else:
+#             standard_codons[value].append(key)
+
+#     return standard_codons
+
+
+def get_codon_probs():
     """
-    Gets the standard codon table from Bio.Data.CodonTable
+    Get dictionary with codon probabilities, in the form:
 
-    Output
-    -----
-    standard_codons : dict
-        Dictionary of the form {'F':['TTT', 'TTC', ...], ...}
+    {'*': [('TAA', 'TAG', 'TGA'), (0.64, 0.07, 0.29)], 'A': ... }
+    
     """
+    # Dictionary of the form
+    # {'*': {'TAA': 0.64, 'TAG': 0.07, 'TGA': 0.29}, 'A': ... }
+    codon_table = pct.get_codons_table("e_coli")
 
-    # Dictionary of the form {'TTT': 'F', 'TTC': 'F', 'TTA': 'L', ...}
-    standard_table=CodonTable.unambiguous_dna_by_name["Standard"].forward_table
+    # A modification is necessary since the probabilities of G do not
+    # sum 1 ... substracted 0.01 to the value
+    codon_table['G']['GGT'] = 0.33
 
-    # Invert the standard table dictionary to make the keys the amino acids, and
-    # the values lists of possible codons
-    standard_codons = {}
-    for key, value in standard_table.items():
-        if value not in standard_codons:
-            standard_codons[value] = [key]
-        else:
-            standard_codons[value].append(key)
+    # Change it to
+    # {'*': [('TAA', 'TAG', 'TGA'), (0.64, 0.07, 0.29)], 'A': ... }
+    codons_probabilities = {}
+    for aa, codons_ps in codon_table.items():
+        codons, ps = zip(*codons_ps.items())
+        codons_probabilities[aa] = [codons, ps]
 
-    return standard_codons
-
-
-def random_backtranslate(seq, codon_table):
-    """
-    Performs a back translation with random codons
-
-    Input
-    -----
-    seq : str
-        The protein sequence to be back translated
-
-    codon_table : dict
-        Dicitionary in the form {'F':['TTT', 'TTC', ...], ...}
-    """
-
-    bt_seq = ''
-    for aa in seq:
-        codons = codon_table[aa]
-        bt_seq += np.random.choice(codons)
-
-    return bt_seq
+    return codons_probabilities
 
 
-def optimized_backtranslate(seq, codons_probabilities):
+# def random_backtranslate(seq, codon_table):
+#     """
+#     Performs a back translation with random codons
+
+#     Input
+#     -----
+#     seq : str
+#         The protein sequence to be back translated
+
+#     codon_table : dict
+#         Dicitionary in the form {'F':['TTT', 'TTC', ...], ...}
+#     """
+
+#     bt_seq = ''
+#     for aa in seq:
+#         codons = codon_table[aa]
+#         bt_seq += np.random.choice(codons)
+
+#     return bt_seq
+
+
+def opt_backtranslate(seq, codons_probabilities, mode):
     """
     Performs a back translation taking into account the codon frequency of a
     reference organism
@@ -425,13 +464,29 @@ def optimized_backtranslate(seq, codons_probabilities):
     codons_probabilities : dict
         The probabilities for each codon for each amino acid, in the form
         {'*': [('TAA', 'TAG', 'TGA'), (0.64, 0.07, 0.29)], 'A': ... }
+
+    mode : string
+        The mode in which the sequence will be back-translated ('optimize' or 
+        'random')
+
+    Output
+    -----
+    bt_seq : string
+        back-translated amino acid sequence
     """
 
     bt_seq = ''
-    for aa in seq:
-        codons = codons_probabilities[aa][0]
-        ps = codons_probabilities[aa][1]
-        bt_seq += np.random.choice(codons, p=ps)
+
+    if mode == 'optimize':
+        for aa in seq:
+            codons = codons_probabilities[aa][0]
+            ps = codons_probabilities[aa][1]
+            bt_seq += np.random.choice(codons, p=ps)
+    
+    elif mode == 'random':
+        for aa in seq:
+            codons = codons_probabilities[aa][0]
+            bt_seq += np.random.choice(codons)
 
     return bt_seq
 
@@ -443,7 +498,7 @@ def back_translate(sequences, nback, mode='optimize'):
     Input
     -----
     sequences : list
-        List with (name, sequence) tuples for the original sequences
+        List with SeqRecord objects for the original sequences
     nback : int
         Number of back-translated sequences to produce
     mode : str
@@ -456,47 +511,55 @@ def back_translate(sequences, nback, mode='optimize'):
     -----
     backtranslated : list
         List with 
-        (name, [backtranslated1, backtranslated2, backtranslated3, ...]) tuples
-        for each sequence
+        (SeqRecord, [backtranslated1, backtranslated2, backtranslated3, ...])
+        tuples for each sequence
     """
 
     backtranslated = []
-    for pair in sequences:
-        seq = pair[1]
 
-        if not ('R' in seq or 'F' in seq or 'W' in seq):    # It is DNA
+    codons_probabilities = get_codon_probs()
+
+    for og_sequence in sequences:
+
+        sequence = copy.deepcopy(og_sequence)
+
+        seq = str(sequence.seq)
+
+        if not is_protein(seq):
             bt_seqs = [seq]             # The first is the original
-            seq = bio.translate(seq)
+            seq = translate(seq)
         else:
             bt_seqs = []
 
-        if mode =='optimize':
-            # Dictionary of the form
-            # {'*': {'TAA': 0.64, 'TAG': 0.07, 'TGA': 0.29}, 'A': ... }
-            codon_table = pct.get_codons_table("e_coli")
+        bt_seqs += [opt_backtranslate(seq, codons_probabilities, mode) \
+                        for i in range(nback-len(bt_seqs))]
 
-            # A modification is necessary since the probabilities of G do not
-            # sum 1 ... substracted 0.01 to the value
-            codon_table['G']['GGT'] = 0.33
-
-            # Change it to
-            # {'*': [('TAA', 'TAG', 'TGA'), (0.64, 0.07, 0.29)], 'A': ... }
-            codons_probabilities = {}
-            for aa, codons_ps in codon_table.items():
-                codons, ps = zip(*codons_ps.items())
-                codons_probabilities[aa] = [codons, ps]
-
-            bt_seqs += [optimized_backtranslate(seq, codons_probabilities) \
-                            for i in range(nback-len(bt_seqs))]
-
-        elif mode == 'random':
-            # Dictionary of the form
-            # {'F':['TTT', 'TTC', ...], ...}
-            codon_table = get_standard_table()
-
-            bt_seqs += [random_backtranslate(seq, codon_table) \
-                            for i in range(nback-len(bt_seqs))]
-
-        backtranslated.append((pair[0], bt_seqs))
+        backtranslated.append((sequence, bt_seqs))
 
     return backtranslated
+
+
+def verify_translation(originals, optimized):
+    """
+    Verify that the optimized sequences code for the same protein as the
+    originals
+    """
+    if all(originals):
+        for i in range(len(originals)):
+            if not translate(originals[i].seq) == translate(optimized[i].seq):
+                return False
+        return True
+    else:
+        return True
+
+def verify_notequal(originals, optimized):
+    """
+    Verify that the optimized sequences are not the same as the originals
+    """
+    if all(originals):
+        for i in range(len(originals)):
+            if originals[i].seq == optimized[i].seq:
+                return False
+        return True
+    else:
+        return True
