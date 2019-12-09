@@ -1,0 +1,80 @@
+LOCUS       protein0001              300 bp    DNA              UNK 01-JAN-1980
+DEFINITION  protein0001.
+ACCESSION   protein0001
+VERSION     protein0001
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 tcttatttga tgggcgttga tgaaaaaagc actgctgaaa ccgtagattc cagtacgtta
+       61 atctcgtgta actttccagt ggtcggaaat ctggcagccc cgtggtttaa tatcctgcgt
+      121 cctatgatga cccgcggtaa agcgaacggg tggaatgaag gtaaaccgaa acattgcagc
+      181 cgtctgaaga ttcagaacaa aagccgctgc caccatgatt tcgacaagcc gcggatgcag
+      241 tttgagattt ggatgaaagg ctacgtgatc gactattata aatacgattc acacttcttc
+//
+LOCUS       protein0002              300 bp    DNA              UNK 01-JAN-1980
+DEFINITION  protein0002.
+ACCESSION   protein0002
+VERSION     protein0002
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 cagttagagg acatgccaga acagcatcat agttacattg catatggtaa atcgaattgt
+       61 cgccacatgt tctatcacta tctgtgggaa ttccgcaaca gcaaagggat gatttgtttt
+      121 ttgtggcaga atatgaccgt taaatgcaac tctgatcgtc tgtgccaaca tccgctccgg
+      181 tttatccatg atatgccgca aatcaccgag gcctggacat ggacctttga cattggcctg
+      241 gtcaacgtac gtaaggcttc ccgcgtggat tgctacgaaa ctacgcgtgc gcagtggcac
+//
+LOCUS       protein0003              300 bp    DNA              UNK 01-JAN-1980
+DEFINITION  protein0003.
+ACCESSION   protein0003
+VERSION     protein0003
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 tataaaggcg acttccttct gtcggaactg gtgtggaaag gcaacactga ccagagtttt
+       61 attaacgacc cgcggaaatg gcgctatggg gttgagttca atgtcaccta cggtcatgga
+      121 ttgatccatc cccaactgcg cccaggcggt ttatacaata aggcatgggt gaatgcgatc
+      181 ccgacgcgtg cttttcagcc tctggccatg gtaaccctgc cgtccgatca aatggaaaaa
+      241 tatctccgtt gcaaagatga tgaaagccag gatcagattc acgataacgc gcactgctgt
+//
+LOCUS       protein0004              300 bp    DNA              UNK 01-JAN-1980
+DEFINITION  protein0004.
+ACCESSION   protein0004
+VERSION     protein0004
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 aaagccgatc tgtgtctcgc gaaacatcgt caccacatca cgtgtatgtg gagctatccg
+       61 gcgccgtata agcacgtgaa agcttttttt accatgcatg aattcgatga gtacactgaa
+      121 ggtggtggca atgccctgga cttcgcaaaa tttatctgca acaactgcga ccgtaagcgg
+      181 tgggtagaac attgtaaaac cgatcagctg cgcccagttt gttacttagt ggtcggcggc
+      241 ggggcaattt atttgtggtc gcgctgggcg ggagatacaa tttgcacctg catgttcaaa
+//
+LOCUS       protein0005              300 bp    DNA              UNK 01-JAN-1980
+DEFINITION  protein0005.
+ACCESSION   protein0005
+VERSION     protein0005
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 cattctatct ggtgtaaata catgtacagc ccgaagcatc ctcaccaccc ggcggactgc
+       61 aataaaggtt ggaacgaggc ccagggtccc gggccgggcc atgcattcca tcgtgattcc
+      121 catccgaatg aaatgtggat ctatcactta ccacaggaca ccgctgattg cgcctatgtg
+      181 ccggtcacgt acgcacaccc actgggcatt aactgggaac cttcgcgctt ttcaattaac
+      241 agtggagaaa tgaatgcgga tgttgcgtat aaatatcaat ggtataaaca ttacctgttt
+//

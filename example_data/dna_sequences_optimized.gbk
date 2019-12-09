@@ -1,0 +1,65 @@
+LOCUS       dna0001                  102 bp    DNA              UNK 01-JAN-1980
+DEFINITION  dna0001.
+ACCESSION   dna0001
+VERSION     dna0001
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 cgcttaacct gcaacctgat gcggtactat ctgcagttgt cctttgatag tccggtgcgt
+       61 tatcactgac caaatagcta agcgggccat gccctgtcgc tc
+//
+LOCUS       dna0002                  102 bp    DNA              UNK 01-JAN-1980
+DEFINITION  dna0002.
+ACCESSION   dna0002
+VERSION     dna0002
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 catgtgtgcg cgcgacatcg tagtcgcgat cggtatgcca ccggcgactt tccgtacatg
+       61 agctaatgat ctcaccgttg tattacgact atgcgctgga tg
+//
+LOCUS       dna0003                  102 bp    DNA              UNK 01-JAN-1980
+DEFINITION  dna0003.
+ACCESSION   dna0003
+VERSION     dna0003
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 taatattttc cgagtaaaga gttatgacat ccagcgagct aatctcgcac gtccgcattg
+       61 gtgctgccgc tctcggaata acagtgccgt accctggcca tt
+//
+LOCUS       dna0004                  102 bp    DNA              UNK 01-JAN-1980
+DEFINITION  dna0004.
+ACCESSION   dna0004
+VERSION     dna0004
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 ccttgactgc cgagcttact gtaattcttt cacgcctaaa tgaccgcaat gctccgttgc
+       61 gtgcgcatgg cgaacccata actgcggccg ttgtttccgc at
+//
+LOCUS       dna0005                  102 bp    DNA              UNK 01-JAN-1980
+DEFINITION  dna0005.
+ACCESSION   dna0005
+VERSION     dna0005
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 tgatccagtg agcagtggct gggctgtatc taaagcgtgc aactgtgcgg tcgcccatcg
+       61 ttaattgaat ctacccatca cgggatgcat gttccgcaca aa
+//

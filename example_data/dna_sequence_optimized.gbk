@@ -1,0 +1,13 @@
+LOCUS       dna0001                  102 bp    DNA              UNK 01-JAN-1980
+DEFINITION  dna0001.
+ACCESSION   dna0001
+VERSION     dna0001
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 taaaacacga ttcgccagtg cacctggtgg gttatccacg ccccacaaca tcttttctta
+       61 cgttttccgg tcgtagtggc gttggaactg ggccgaagcc tg
+//

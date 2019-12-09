@@ -1,0 +1,16 @@
+LOCUS       protein0001              300 bp    DNA              UNK 01-JAN-1980
+DEFINITION  protein0001.
+ACCESSION   protein0001
+VERSION     protein0001
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+ORIGIN
+        1 caaaccgctc accaaatgtc gtttagcgcc aaagacttaa accgcattga agcaatgacc
+       61 gaataccgtt tgtggcatgc gccgtccgta ccatacgagg agtggtcaca tggttataat
+      121 tggcgcctgg atagctatac gtatcaccag acaatcaacg tccaggaagg tcagggcgga
+      181 tggcgctgca atcgtaatat cttcagtgtt atgacttata aacaccagtg gtttttctac
+      241 agctatggca cgattcgtaa ccataacggg attcggtgta ccctgatgaa gatggtgtct
+//
