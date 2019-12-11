@@ -23,11 +23,9 @@ Codon optimization using the [dnachisel](https://pypi.org/project/dnachisel/) li
    
      `cd CoolerCodonOpt`
    
-   - Install `virtualenv` if not present, and create the virtual environment
-   
-     `pip install virtualenv`
-   
-     `virtualenv --python=python3 venv`
+   - Create a virtual environment
+      
+     `python3 -m venv venv`
    
    - Activate the virtual environment
    
