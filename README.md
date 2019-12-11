@@ -30,16 +30,14 @@ Codon optimization using the [dnachisel](https://pypi.org/project/dnachisel/) li
    - Activate the virtual environment
    
      `source venv/bin/activate`
-   
-   - Deactivate the virtual environment (when you finish working)
-   
-     `deactivate`
-   
-   
-4. Install dnachisel with the following command:
+     
+4. Install requirements
 
-   `pip install dnachisel[reports]`
+     `pip install -r requirements.txt`
    
+5. Deactivate virtual environment
+      
+     `deactivate`
 
 ## Usage
 
