@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Script to parse the command line arguments and perform codon optimization
 """
