@@ -2,7 +2,60 @@
 ---
 Codon optimization using the [dnachisel](https://pypi.org/project/dnachisel/) library
 
-## Installation
+## Installation with conda (recommended)
+
+Conda is an open source package and environment management system that runs on Windows, macOS and Linux. To know more about Conda take a look at the workshop [Introduction to Conda for (Data) Scientists](https://carpentries-incubator.github.io/introduction-to-conda-for-data-scientists/) or the [YouTube workshop](https://www.youtube.com/channel/UCR1RFwgvADo5CutK0LnZRrw/featured) prepared by the KAUST Visualization Core Lab.
+
+1. Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) in your system:
+
+   For MacOS:
+
+   -  Download the installer in your home directory: https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+
+   - Open your terminal, go to your home directory (or wherever you downloaded the file) and run the installation script:
+
+     ```
+     bash Miniconda3-latest-MacOSX-x86_64.sh
+     ```
+
+   - The script will present several prompts that allow you to customize the Miniconda install. It is recommended to accept the default settings. However, when prompted with the following:
+
+     ```
+     Do you wish the installer to initialize Miniconda3
+     by running conda init?
+     ```
+
+     Type `yes` to avoid to manually initialize Conda later. If you accidentally type `no`, when the script finishes you simply need to type the following command:
+
+     ```
+     conda init bash
+     ```
+
+   - Close and open the terminal again. You will see either `(miniconda3)` or `(base)` before the terminal prompt, which means conda was installed correctly and the `base` environment is activated.
+
+
+2. Open your terminal and go to the directory where you would like to save the project. Then run the following command: 
+
+   `git clone https://github.com/strubelab/CoolerCodonOpt.git`
+   
+   - The directory `CoolerCodonOpt/` is created.
+
+3. Create a virtual environment to work on:
+
+   - Go to the `CoolerCodonOpt` directory
+   
+     `cd CoolerCodonOpt`
+   
+   - Create a virtual environment
+      
+     `conda env create --prefix ./env --file environment.yml`
+   
+   - Activate the virtual environment
+   
+     `conda activate ./env`
+     
+
+## Installation with venv and pip
 
 1. Verify that you have python 3 installed in your computer:
    
@@ -35,7 +88,7 @@ Codon optimization using the [dnachisel](https://pypi.org/project/dnachisel/) li
 
      `pip install -r requirements.txt`
    
-5. Deactivate virtual environment
+5. When you finish working, you can deactivate the virtual environment
       
      `deactivate`
 
