@@ -10,7 +10,6 @@ import python_codon_tables as pct
 import numpy as np
 
 from Bio import SeqIO
-from Bio.Alphabet import IUPAC
 from Bio.Seq import Seq, translate
 from Bio.SeqRecord import SeqRecord
 from Bio.Data import CodonTable
@@ -364,9 +363,9 @@ def optimize(in_sequence, intype, nback, n, seqid):
 
         best_optimized = optimized_backtranslated[0]
 
-        sequence.seq = Seq(best_optimized[0], 
-            IUPAC.unambiguous_dna)
-
+        sequence.seq = Seq(best_optimized[0])
+        
+        sequence.annotations["molecule_type"] = "DNA"
         sequence.annotations["Objectives score"] = best_optimized[1]
         sequence.annotations["Constraints text summary"] = best_optimized[2]
         sequence.annotations["Objectives text summary"] = best_optimized[3]
