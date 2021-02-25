@@ -126,18 +126,35 @@ def run(sequence, opt=True):
 
     problem = dn.DnaOptimizationProblem(
         sequence = sequence,
-        constraints = [spec.AvoidPattern("GGRGG"), spec.AvoidPattern("GGTCTC"),
-                    spec.AvoidPattern("GAGACC"), spec.AvoidPattern("GCGATG"),
-                    spec.AvoidPattern("CATCGC"), spec.AvoidPattern("GCTCTTC"),
-                    spec.AvoidPattern("GAAGAGC"), spec.AvoidPattern("CGTCTC"),
-                    spec.AvoidPattern("GAGACG"), spec.AvoidPattern("GAAGAC"),
-                    spec.AvoidPattern("GTCTTC"),
-                    spec.EnforceGCContent(0.46,0.54),
-                    spec.UniquifyAllKmers(k=8),
-                    spec.EnforceTranslation()],
-        objectives = [spec.CodonOptimize(species='e_coli', 
-            method='match_codon_usage')]
+        constraints = [ spec.AvoidPattern("GGRGG"), spec.AvoidPattern("GGTCTC"),
+                        spec.AvoidPattern("GAGACC"), spec.AvoidPattern("GCGATG"),
+                        spec.AvoidPattern("CATCGC"), spec.AvoidPattern("GCTCTTC"),
+                        spec.AvoidPattern("GAAGAGC"), spec.AvoidPattern("CGTCTC"),
+                        spec.AvoidPattern("GAGACG"), spec.AvoidPattern("GAAGAC"),
+                        spec.AvoidPattern("GTCTTC"),
+                        
+                        # promoter patterns: http://parts.igem.org/Help:Promoters/Prokaryotic_RNAP
+                        spec.AvoidPattern('TTGACA.{17}TATAAT'),
+                        spec.AvoidPattern('NNNNMRNRYTGGCACGNNNNTTGCWNNWNNNNN'),
+                        spec.AvoidPattern('NTCNCCCTTGAA.{17}CCCCATTTA'),
+                        spec.AvoidPattern('TAAAGWWY{11,12}RYCGAWRN'),
+                        spec.AvoidPattern('TGGATAAACATTTCACCACTGTAAGGAAAATAATTCTTATTTCGATTGTCCTTTTTACCCT'),
+                        
+                        spec.AvoidPattern('TAAGAG'), # strong RBS (Twist)
+                        spec.AvoidPattern('TTTTT'), spec.AvoidPattern('AAAAA'), # terminator (Twist)
+                        spec.AvoidPattern('10xA'), spec.AvoidPattern('10xT'),   # homopolymers >9 (Twist)
+                        spec.AvoidPattern('10xG'), spec.AvoidPattern('10xC'),
+                        spec.UniquifyAllKmers(k=20), # repeats > 20 (Twist)
+                        spec.EnforceGCContent(0.38,0.62), # Twist recommendation 35 - 65%
+
+                        spec.EnforceTranslation()
+                    ],
+        objectives = [ spec.CodonOptimize(species='e_coli', method='match_codon_usage'),
+                       spec.UniquifyAllKmers(k=8, boost=5.),
+                       spec.EnforceGCContent(0.45,0.55, boost=3.),
+                    ],
         )
+    problem.max_random_iters = 5000
 
     if opt:
         # Solve the constraints, optimize with respect to the objective
