@@ -25,53 +25,37 @@ def parsing(args=None):
     parser = argparse.ArgumentParser(description='''Takes a DNA sequence and
         optimizes it for expression in E. coli''')
 
-    parser.add_argument("sequence", help='''DNA sequence to be optimized. Takes
-        a single sequence as a string, or the name of a file with one or more 
-        sequences in fasta or genbank format. If a file is provided, the 
-        --intype argument has to be given as well.''')
+    parser.add_argument("sequence", help='''DNA or protein sequence to be optimized. 
+        Takes a single sequence as a string, the name of a file with one or more 
+        sequences in fasta or genbank format, or a directory with the sequences 
+        (the termination for fasta files must be `.fasta` or `.fa`, and `.gbk` for 
+        genbank). If a file is provided, the --intype argument has to be given as well.
+        '''.replace('\n', ''))
 
     parser.add_argument("-i", "--intype", default=None, 
-        help='''If `sequence` is a file, indicate the file type as `fasta` or 
-        `genbank`.''')
+        help='''If `sequence` is a file or a directory with files, indicate the 
+        file type as `fasta` or `genbank`.'''.replace('\n', ''))
 
     parser.add_argument("-o", "--outtype", default="fasta",
         help='''Save the resulting optimized sequences to a file, in the 
         indicated format. It can be `fasta`, `genbank` or `fasta/genbank` for 
-        both.''')
+        both.'''.replace('\n', ''))
 
     parser.add_argument("-v", "--verbose", help='''Show the constraints 
-        evaluations, and optimization objectives score.''', action="count",
-        default=0)
+        evaluations, and optimization objectives score.'''.replace('\n', ''),
+        action="count", default=0)
 
     parser.add_argument("-p", "--separate", help='''Save the optimized sequences
          from the input file in separate files, as opposed to all in one single 
-        file''', action="store_true")
+        file'''.replace('\n', ''), action="store_true")
 
     parser.add_argument("-d", "--destination", default=os.getcwd(), 
         help='''Path for saving the resulting sequences. --outtype has to be 
-        provided.''')
+        provided.'''.replace('\n', ''))
 
     parser.add_argument("-q", "--seqid", default="seq", 
         help='''Name/identifier of the sequence. Only used when a single
         sequence is provided as a string, and you want to save it to a file.''')
-
-    # parser.add_argument("-m", "--modebt", default="optimize",
-    #     help='''Mode to run back translation of the sequence, it can be 
-    #     "optimize" to take into account codon frequencies, or "random" to give
-    #     random codons (default=optimize).''')
-
-    parser.add_argument("-j", "--jobname", default=None,
-        help='''Name of the job that will go in the name of the results file. 
-        --outtype has to be provided.''')
-
-    parser.add_argument("-n", "--number", default=10, type=int, 
-        help='''Number of optimized sequences to produce per each
-        back-translated one (default=10).''')
-
-    parser.add_argument("-b", "--nback", default=10, type=int, 
-        help='''Number of random back-transalted sequences to be produced 
-        (default=10). 0 to not back translate and optimize only from the 
-        original sequence.''')
 
     return parser.parse_args(args)
 
@@ -122,28 +106,7 @@ def message(verbose, originals, optimized):
                 optimized[i].annotations["Objectives score"])
 
 
-def get_jobname(jobname, sequence):
-    """
-    Gets the name for the output file
-
-    Input
-    -----
-    jobname : str
-        --jobname argument provided when calling the script, if not provided it
-        is None
-    sequence : str
-        --sequence argument provided when calling the script
-    """
-    if jobname:
-        return jobname
-    elif os.path.isfile(sequence):
-        # File name without the extension
-        return os.path.splitext(os.path.basename(sequence))[0]
-    else:
-        return "coolercodonopt"
-
-
-def save_file(optimized, destination, outtype, separate, jobname):
+def save_file(optimized, destination, outtype, separate, input_seq):
     """
     Save the optimized sequence(s) to a file
 
@@ -161,6 +124,11 @@ def save_file(optimized, destination, outtype, separate, jobname):
     jobnale : str
         Name of the output file name
     """
+    if os.path.isfile(input_seq):
+        fname = os.path.splitext(os.path.basename(input_seq))[0]
+    else:
+        fname = "coolercodonopt"
+
     extension = "_optimized.fasta" if outtype == "fasta" else "_optimized.gbk"
 
     if separate:
@@ -187,13 +155,12 @@ if __name__ == '__main__':
         message(args.verbose, originals, optimized)
 
     if args.outtype:
-        jobname = get_jobname(args.jobname, args.sequence)
         
         if args.outtype == 'fasta/genbank':
             save_file(optimized, args.destination, 'fasta', args.separate,
-                jobname)
+                args.sequence)
             save_file(optimized, args.destination, 'genbank', args.separate,
-                jobname)
+                args.sequence)
         else:
             save_file(optimized, args.destination, args.outtype, args.separate,
                 jobname)
