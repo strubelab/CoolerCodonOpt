@@ -55,3 +55,10 @@ nosetests.xml
 # Mac-OSX
 .DS_Store
 \~\$*
+
+# Custom directories
+env
+jobs
+notebook
+venv_codonopt
+.vscode
