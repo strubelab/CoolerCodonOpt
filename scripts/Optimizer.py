@@ -56,8 +56,8 @@ class Optimizer:
 
     MAX_RANDOM_ITERS = 5000
     BACK_TRANSLATION_MODE = 'optimize'
-    NUMBER_BACK_TRANSLATED = 2
-    NUMBER_OPTIMIZATIONS = 2
+    NUMBER_BACK_TRANSLATED = 10
+    NUMBER_OPTIMIZATIONS = 10
 
 
     def __init__(self, sequence: SeqRecord):
