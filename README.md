@@ -102,63 +102,32 @@ Conda is an open source package and environment management system that runs on W
    
    
 ```
-usage: optimize.py [-h] [-i INTYPE] [-o OUTTYPE] [-v] [-p] [-d DESTINATION]
-                   [-q SEQID] [-j JOBNAME] [-n NUMBER] [-b NBACK]
-                   sequence
+usage: optimize.py [-h] [-v] [-d DESTINATION] input
 
 Takes a DNA sequence and optimizes it for expression in E. coli
 
 positional arguments:
-  sequence              DNA sequence to be optimized. Takes a single sequence
-                        as a string, or the name of a file with one or more
-                        sequences in fasta or genbank format. If a file is
-                        provided, the --intype argument has to be given as
-                        well.
+  input                 Fasta file with the sequence(s) to be optimized, or a directory with fasta files.
 
 optional arguments:
   -h, --help            show this help message and exit
-  -i INTYPE, --intype INTYPE
-                        If `sequence` is a file, indicate the file type as
-                        `fasta` or `genbank`.
-  -o OUTTYPE, --outtype OUTTYPE
-                        Save the resulting optimized sequences to a file, in
-                        the indicated format. It can be `fasta`, `genbank` or
-                        `fasta/genbank` for both.
-  -v, --verbose         Show the constraints evaluations, and optimization
-                        objectives score.
-  -p, --separate        Save the optimized sequences from the input file in
-                        separate files, as opposed to all in one single file
+  -v, --verbose         Show the constraints evaluations, and optimization objectives score.
   -d DESTINATION, --destination DESTINATION
-                        Path for saving the resulting sequences. --outtype has
-                        to be provided.
-  -q SEQID, --seqid SEQID
-                        Name/identifier of the sequence. Only used when a
-                        single sequence is provided as a string, and you want
-                        to save it to a file.
-  -j JOBNAME, --jobname JOBNAME
-                        Name of the job that will go in the name of the
-                        results file. --outtype has to be provided.
-  -n NUMBER, --number NUMBER
-                        Number of optimized sequences to produce per each
-                        back-translated one (default=10).
-  -b NBACK, --nback NBACK
-                        Number of random back-transalted sequences to be
-                        produced (default=10). 0 to not back translate and
-                        optimize only from the original sequence.
+                        Path for saving the resulting sequences. It defaults to the same directory as the input.
 ```
 
-#### A. Run providing a single sequence as a string
+#### A. Run providing a fasta file with one or more sequences
 
-The following command will optimize the given sequence, output the optimized sequence and optimization score to the terminal and save the optimized sequence to file in fasta format:
+The following command will optimize the given sequence, output the optimized sequence and optimization score to the terminal and save the optimized sequence to a file in fasta format:
 
 ``` bash
-python optimize.py ASFGTFTGFAWDWDWEERFFKLKLIP -v --outtype fasta
+python optimize.py sequence.fasta --verbose
 ```
 
-#### B. Provide one or more sequences in a FASTA file
+#### B. Provide a directory name with fasta sequence files
 
-The following command will take the sequences given in `dna_sequences.fasta`, optimize them and save them to a file in genbank format in the folder `../example_data`:
+The following command will take all the sequences in the `sequences/` directory, and save them in the `optimized_sequences/` directory.
 
 ``` bash
-python optimize.py ../example_data/dna_sequences.fasta --intype fasta --outtype genbank --destination ../example_data
+python optimize.py sequences/ --destination optimized_sequences/
 ```
