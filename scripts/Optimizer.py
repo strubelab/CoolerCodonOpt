@@ -43,7 +43,8 @@ class Optimizer:
         spec.AvoidPattern('10xA'), spec.AvoidPattern('10xT'),   # homopolymers >9 (Twist)
         spec.AvoidPattern('10xG'), spec.AvoidPattern('10xC'),
         spec.UniquifyAllKmers(k=20), # repeats > 20 (Twist)
-        spec.EnforceGCContent(0.38,0.62), # Twist recommendation 35 - 65%
+        spec.EnforceGCContent(0.38,0.62), # Twist recommendation 35 - 65%; global
+        spec.EnforceGCContent(0.30,0.79, window=50), # Twist constraint ?? - 80% within 50 bp window
 
         spec.EnforceTranslation()
     ]
