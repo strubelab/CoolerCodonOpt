@@ -53,7 +53,12 @@ Conda is an open source package and environment management system that runs on W
    - Activate the virtual environment
    
      `conda activate ./env`
-     
+
+4. Install the `CoolerCodonOpt` package in your virtual environment:
+
+    ```
+    pip install -e .
+    ```     
 
 ## Installation with venv and pip
 
@@ -84,9 +89,12 @@ Conda is an open source package and environment management system that runs on W
    
      `source venv/bin/activate`
      
-4. Install requirements
+4. Install requirements and the `CoolerCodonOpt` package
 
-     `pip install -r requirements.txt`
+    ```
+    pip install -r requirements.txt
+    pip install -e .
+    ```
    
 5. When you finish working, you can deactivate the virtual environment
       
@@ -94,15 +102,14 @@ Conda is an open source package and environment management system that runs on W
 
 ## Usage
 
-1. Go to the CoolerCodonOpt/scripts directory and run the script:
+1. Now you can call the `optimize` script from any location:
 
-   `cd CoolerCodonOpt/scripts`
-   
-   `python optimize.py -h`
-   
+```
+optimize --help
+```
    
 ```
-usage: optimize.py [-h] [-v] [-d DESTINATION] input
+usage: optimize [-h] [-v] [-d DESTINATION] input
 
 Takes a DNA sequence and optimizes it for expression in E. coli
 
@@ -116,7 +123,7 @@ optional arguments:
                         Path for saving the resulting sequences. It defaults to the same directory as the input.
 ```
 
-#### A. Run providing a fasta file with one or more sequences
+### A. Run providing a fasta file with one or more sequences
 
 The following command will optimize the given sequence, output the optimized sequence and optimization score to the terminal and save the optimized sequence to a file in fasta format:
 
@@ -124,7 +131,7 @@ The following command will optimize the given sequence, output the optimized seq
 python optimize.py sequence.fasta --verbose
 ```
 
-#### B. Provide a directory name with fasta sequence files
+### B. Provide a directory name with fasta sequence files
 
 The following command will take all the sequences in the `sequences/` directory, and save them in the `optimized_sequences/` directory.
 

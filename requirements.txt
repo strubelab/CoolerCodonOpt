@@ -1,4 +1,2 @@
 biopython==1.75
 dnachisel
-pandas
-
