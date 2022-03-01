@@ -1,5 +1,5 @@
 import argparse
-from sequence_utils import validate_file
+from .sequence_utils import validate_file
 
 def parsing(args: list=None) -> argparse.Namespace:
     """

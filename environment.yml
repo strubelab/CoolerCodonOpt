@@ -6,13 +6,9 @@ channels:
   - bioconda
 
 dependencies:
-  - ipykernel=5.4
   - python=3.9
-  - ipython=7.19
-  - numpy=1.19
-  - pandas=1.2
-  - pip=21.0
+  - numpy
+  - pip
   - pip:
     - dnachisel==3.2.6
-  - jupyterlab=3.0
   - biopython=1.78

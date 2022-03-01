@@ -3,8 +3,8 @@ Optimizer class that will contain the methods for the codon optimization
 """
 import copy
 from operator import itemgetter
-from sequence_utils import back_translate, check_nucleotide, detect_ATA_ATA
-from logger_utils import get_logger
+from .sequence_utils import back_translate, check_nucleotide, detect_ATA_ATA
+from .logger_utils import get_logger
 
 import dnachisel
 import dnachisel.builtin_specifications as spec
