@@ -109,18 +109,24 @@ optimize --help
 ```
    
 ```
-usage: optimize [-h] [-v] [-d DESTINATION] input
+usage: optimize [-h] [--species SPECIES] [-v] [-d DESTINATION] input
 
 Takes a DNA sequence and optimizes it for expression in E. coli
 
 positional arguments:
-  input                 Fasta file with the sequence(s) to be optimized, or a directory with fasta files.
+  input                 Fasta file with the sequence(s) to be optimized, or a directory with fasta
+                        files.
 
 optional arguments:
   -h, --help            show this help message and exit
+  --species SPECIES     Species for which the sequence will be codon-optimized. Can be either a TaxID
+                        (requires internet connection) or the name of the species from the available
+                        choices: b_subtilis, c_elegans, d_melanogaster, e_coli, g_gallus, h_sapiens,
+                        m_musculus, m_musculus_domesticus, s_cerevisiae
   -v, --verbose         Show the constraints evaluations, and optimization objectives score.
   -d DESTINATION, --destination DESTINATION
-                        Path for saving the resulting sequences. It defaults to the same directory as the input.
+                        Path for saving the resulting sequences. It defaults to the same directory as
+                        the input.
 ```
 
 ### A. Run providing a fasta file with one or more sequences
