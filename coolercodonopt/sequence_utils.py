@@ -10,22 +10,6 @@ from Bio import SeqIO
 from numpy.random import Generator
 
 
-def validate_file(input: str) -> bool:
-    """
-    Validate that input is an existing file or directory
-
-    Args:
-        input (str): input file or directory
-
-    Returns:
-        bool
-    """
-    inp = Path(input)
-    if not inp.exists():
-        raise ValueError
-
-    return inp
-
 
 def read_sequences(input: Path) -> dict:
     """
@@ -151,7 +135,7 @@ def detect_ATA_ATA(sequence:str) -> bool:
     return False
 
 
-def save_file(file:Path, optimizers:list, destination:str=None):
+def save_file(file:Path, optimizers:list, destination:str=None, species:str=None):
     """
     Writes the optimized sequences to a file
 
@@ -168,9 +152,9 @@ def save_file(file:Path, optimizers:list, destination:str=None):
         if not dest.is_dir():
             raise ValueError
 
-        f_out = dest / (file.stem + '_optimized.fasta')
+        f_out = dest / (file.stem + f'_optimized_for_{species}.fasta')
     else:
-        f_out = file.parent / (file.stem + '_optimized.fasta')
+        f_out = file.parent / (file.stem + f'_optimized_for_{species}.fasta')
     
     optimized_SeqRecs = [opt.best_optimized_SeqRec for opt in optimizers]
     

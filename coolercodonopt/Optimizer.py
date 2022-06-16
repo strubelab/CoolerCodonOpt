@@ -49,11 +49,6 @@ class Optimizer:
         spec.EnforceTranslation()
     ]
 
-    OBJECTIVES = [
-        spec.CodonOptimize(species='e_coli', method='match_codon_usage'),
-        spec.UniquifyAllKmers(k=8, boost=5.),
-        spec.EnforceGCContent(0.45,0.55, boost=3.)
-    ]
 
     MAX_RANDOM_ITERS = 5000
     BACK_TRANSLATION_MODE = 'optimize'
@@ -61,7 +56,7 @@ class Optimizer:
     NUMBER_OPTIMIZATIONS = 10
 
 
-    def __init__(self, sequence: SeqRecord):
+    def __init__(self, sequence: SeqRecord, species:str='e_coli'):
         """
         Generate a DnaOptimizationProblem for a given sequence
 
@@ -72,6 +67,12 @@ class Optimizer:
         self.input_SeqRec = sequence
         self.sequence = str(self.input_SeqRec.seq)
         self.is_nucleotide = check_nucleotide(self.sequence)
+
+        self.OBJECTIVES = [
+        spec.CodonOptimize(species=species, method='match_codon_usage'),
+        spec.UniquifyAllKmers(k=8, boost=5.),
+        spec.EnforceGCContent(0.45,0.55, boost=3.)
+        ]
 
         if self.is_nucleotide:
             logger.info('DNA sequence identified...')

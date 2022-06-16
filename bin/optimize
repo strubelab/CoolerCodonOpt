@@ -5,17 +5,96 @@ Script to parse the command line arguments and perform codon optimization
 """
 
 from pathlib import Path
-from datetime import datetime
 
-from Bio import SeqIO
-from Bio.SeqRecord import SeqRecord
-from Bio.Seq import Seq
+import argparse
 
-from coolercodonopt.parser_utils import parsing
 from coolercodonopt.logger_utils import get_logger
 from coolercodonopt.sequence_utils import save_file, read_sequences
 
 from coolercodonopt.Optimizer import Optimizer
+
+
+def parsing(args: list=None) -> argparse.Namespace:
+    """
+    Creates the argument parser instance and applies it to the command line
+    input
+
+    Input
+    -----
+    args : list
+        List of the arguments to be parsed (only to be used for testing). If
+        none is provided, it is taken from sys.argv
+    """
+    valid_species = [
+        'b_subtilis',
+        'c_elegans',
+        'd_melanogaster',
+        'e_coli',
+        'g_gallus',
+        'h_sapiens',
+        'm_musculus',
+        'm_musculus_domesticus',
+        's_cerevisiae'
+    ]
+
+    def validate_file(input: str) -> bool:
+        """
+        Validate that input is an existing file or directory
+
+        Args:
+            input (str): input file or directory
+
+        Returns:
+            bool
+        """
+        inp = Path(input)
+        if not inp.exists():
+            raise ValueError("Specified sequence file doesn't exist.")
+
+        return inp
+    
+    def validate_species(input:str) -> str:
+        """
+        Validate the value of the `species` argument
+
+        Args:
+            input (str): Specified species
+
+        Returns:
+            str: validated species
+        """
+        if input.isnumeric():
+            return input
+        elif input in valid_species:
+            return input
+        else:
+            raise ValueError("Input is not a TaxID number or the name of a "
+                             "valid species.")
+        
+
+
+    parser = argparse.ArgumentParser(description='''Takes a DNA sequence and
+        optimizes it for expression in E. coli'''.replace('\n', ''))
+
+    parser.add_argument("input", help='''Fasta file with the sequence(s)
+        to be optimized, or a directory with fasta files.'''.replace('\n', ''),
+        type=validate_file)
+
+    parser.add_argument("--species", help=("Species for which the sequence "
+        "will be codon-optimized. Can be either a TaxID (requires internet "
+        "connection) or the name of the species from the available choices: "
+        + ", ".join(valid_species)), default='e_coli', type=validate_species)
+    
+    parser.add_argument("-v", "--verbose", help='''Show the constraints 
+        evaluations, and optimization objectives score.'''.replace('\n', ''),
+        action="store_true")
+
+    parser.add_argument("-d", "--destination", default=None, 
+        help='''Path for saving the resulting sequences. It defaults to the same 
+        directory as the input.'''.replace('\n', ''))
+
+    return parser.parse_args(args)
+
 
 
 if __name__ == '__main__':
@@ -32,7 +111,7 @@ if __name__ == '__main__':
 
     for file, sequences in sequences_dict.items():
         logger.info(f'{file} : {len(sequences)} sequence(s) found.')
-        optimizers = [Optimizer(seq) for seq in sequences]
+        optimizers = [Optimizer(seq, species=args.species) for seq in sequences]
         for opt in optimizers:
             opt.optimize()
 
@@ -51,6 +130,6 @@ if __name__ == '__main__':
                 logger.info(opt.best_optimized_SeqRec.annotations["Objectives text summary"])
 
         try:
-            save_file(file, optimizers, args.destination)
+            save_file(file, optimizers, args.destination, args.species)
         except ValueError:
             logger.error('Please provide a valid name for the destination directory')
